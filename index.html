@@ -29,7 +29,7 @@
             height: 100vh;
         }
         #viewer {
-            width: 40%;
+            width: 50%;
             height: 100%;
             position: relative;
         }
@@ -45,7 +45,7 @@
             z-index: 1000;
         }
         #arcgis-container {
-            width: 60%;
+            width: 50%;
             height: 100%;
             position: relative;
         }
@@ -99,9 +99,28 @@
         #sync-btn:hover {
             background: #3367D6;
         }
-        #toggle-fov-btn {
+        #edit-btn {
             position: absolute;
             top: 58px;
+            right: 10px;
+            background: #9C27B0;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 1001;
+            transition: background 0.2s;
+        }
+        #edit-btn:hover {
+            background: #7B1FA2;
+        }
+        #toggle-fov-btn {
+            position: absolute;
+            top: 106px;
             right: 10px;
             background: #FF9800;
             color: white;
@@ -209,7 +228,7 @@
         </div>
         
         <div id="arcgis-container">
-            <iframe id="arcgis-map" src="https://timmons-group.maps.arcgis.com/apps/instant/webeditor/index.html?appid=3447c7b5a1bd4a1bb3163beaf6009ca3"></iframe>
+            <iframe id="arcgis-map" src="https://timmons-group.maps.arcgis.com/apps/mapviewer/index.html?webmap=0de90d7988f9470da59918c9b00c5379"></iframe>
             <div id="arcgis-overlay">
                 <div id="crosshair-container">
                     <svg id="crosshair-svg" viewBox="0 0 100 100">
@@ -219,7 +238,8 @@
                 </div>
             </div>
             <button id="sync-btn">📍 Sync to Current Image</button>
-            <button id="toggle-fov-btn">Show FOV</button>
+            <button id="edit-btn">✏️ Open Web Editor</button>
+            <button id="toggle-fov-btn">👁️ Show FOV over ArcGIS Map</button>
         </div>
     </div>
 
@@ -580,7 +600,7 @@
                 const arcgisZoom = 18;
                 
                 const iframe = document.getElementById('arcgis-map');
-                const baseUrl = 'https://timmons-group.maps.arcgis.com/apps/webeditor/index.html';
+                const baseUrl = 'https://timmons-group.maps.arcgis.com/apps/mapviewer/index.html';
                 const newUrl = `${baseUrl}?webmap=0de90d7988f9470da59918c9b00c5379&center=${pos.lng},${pos.lat}&level=${arcgisZoom}`;
                 iframe.src = newUrl;
                 
@@ -598,6 +618,20 @@
             }
         });
 
+        document.getElementById('edit-btn').addEventListener('click', async () => {
+            try {
+                const pos = await viewer.getPosition();
+                const arcgisZoom = 18;
+                
+                const baseUrl = 'https://timmons-group.maps.arcgis.com/apps/webeditor/index.html';
+                const editorUrl = `${baseUrl}?webmap=0de90d7988f9470da59918c9b00c5379&center=${pos.lng},${pos.lat}&level=${arcgisZoom}`;
+                window.open(editorUrl, '_blank');
+            } catch (err) {
+                console.error('Error opening web editor:', err);
+                alert('Could not get current position. Please try again.');
+            }
+        });
+
         document.getElementById('toggle-fov-btn').addEventListener('click', () => {
             fovOverlayVisible = !fovOverlayVisible;
             const overlay = document.getElementById('arcgis-overlay');
@@ -606,12 +640,12 @@
             if (fovOverlayVisible) {
                 overlay.classList.add('visible');
                 btn.classList.add('active');
-                btn.textContent = 'Hide FOV';
+                btn.textContent = '👁️ Hide FOV Overlay';
                 updateMiniMapPosition();
             } else {
                 overlay.classList.remove('visible');
                 btn.classList.remove('active');
-                btn.textContent = 'Show FOV';
+                btn.textContent = '👁️ Show FOV over ArcGIS Map';
             }
         });
 

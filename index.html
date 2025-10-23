@@ -239,7 +239,7 @@
             </div>
             <button id="sync-btn">📍 Sync to Current Image</button>
             <button id="edit-btn">✏️ Open Web Editor</button>
-            <button id="toggle-fov-btn">👁️ Show FOV over ArcGIS Map</button>
+            <button id="toggle-fov-btn">Show FOV</button>
         </div>
     </div>
 
@@ -640,12 +640,12 @@
             if (fovOverlayVisible) {
                 overlay.classList.add('visible');
                 btn.classList.add('active');
-                btn.textContent = '👁️ Hide FOV Overlay';
+                btn.textContent = 'Hide FOV';
                 updateMiniMapPosition();
             } else {
                 overlay.classList.remove('visible');
                 btn.classList.remove('active');
-                btn.textContent = '👁️ Show FOV over ArcGIS Map';
+                btn.textContent = 'Show FOV';
             }
         });
 

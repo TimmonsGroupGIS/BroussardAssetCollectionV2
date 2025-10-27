@@ -304,7 +304,7 @@
                 while (true) {
                     const url = new URL('https://graph.mapillary.com/images');
                     url.searchParams.set('access_token', TOKEN);
-                    url.searchParams.set('fields', 'id,geometry,sequence,captured_at');
+                    url.searchParams.set('fields', 'id,geometry,sequence,captured_at,is_pano');
                     url.searchParams.set('creator_username', USERNAME);
                     url.searchParams.set('limit', 2000);
                     if (after) url.searchParams.set('after', after);
@@ -324,6 +324,10 @@
                     
                     const filtered = images.filter(img => {
                         if (!img.captured_at) return false;
+                        // Filter for 360 images only
+                        if (!img.is_pano) {
+                            return false;
+                        }
                         let capturedTime = typeof img.captured_at === 'number' ? 
                             img.captured_at : Date.parse(img.captured_at);
                         return capturedTime >= startTime && capturedTime < endTime;
